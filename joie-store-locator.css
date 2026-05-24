@@ -440,10 +440,14 @@ button:hover {
 
 
 .leaflet-control-attribution {
-  margin: 0 0 0 8px !important;
+  margin: 0 0 0 18px !important;
   padding: 2px 8px !important;
   border: 0 !important;
-  border-radius: 999px;
+  border-radius: 
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
   background: rgba(255, 255, 255, .62) !important;
   color: rgba(79, 79, 79, .72) !important;
   box-shadow: none !important;
