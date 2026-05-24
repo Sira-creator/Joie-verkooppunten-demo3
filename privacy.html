@@ -523,8 +523,10 @@
       </p>
 
       <ul>
-        <li><strong>GitHub Pages</strong> voor hosting van de website;</li>
+        <li><strong>de hostingprovider van de website</strong> voor het technisch beschikbaar maken van de website;</li>
         <li><strong>Google Fonts</strong> voor het laden van het gebruikte lettertype;</li>
+        <li><strong>unpkg of vergelijkbare CDN-diensten</strong> voor het laden van Leaflet en de kaartclusterbibliotheek, zolang deze bestanden extern worden geladen;</li>
+        <li><strong>CARTO</strong> voor het tonen van kaarttegels op de interactieve kaart;</li>
         <li><strong>OpenStreetMap/Nominatim</strong> voor het omzetten van zoekopdrachten naar coördinaten;</li>
         <li><strong>Google Maps</strong> wanneer u een route of kaart opent;</li>
         <li><strong>websites of webshops van verkooppunten</strong> wanneer u doorklikt naar een externe winkelwebsite.</li>
@@ -599,7 +601,7 @@
         verplichtingen wijzigen. De meest recente versie is steeds beschikbaar op deze pagina.
       </p>
             <p class="small-note">
-        Laatste update: juni 2026.
+        Laatste update: 24 mei 2026.
       </p>
     </article>
   </main>
@@ -632,7 +634,7 @@
   </footer>
 
   <script>
-    localStorage.setItem('joie_language', 'nl');
+    try { window.localStorage.setItem('joie_language', 'nl'); } catch (error) {}
   </script>
 </body>
 </html>

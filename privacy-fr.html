@@ -525,8 +525,10 @@
       </p>
 
       <ul>
-        <li><strong>GitHub Pages</strong> pour l’hébergement du site web ;</li>
+        <li><strong>le prestataire d’hébergement du site web</strong> pour la mise à disposition technique du site ;</li>
         <li><strong>Google Fonts</strong> pour le chargement de la police utilisée ;</li>
+        <li><strong>des services CDN comme unpkg ou des services comparables</strong> pour le chargement de Leaflet et de la bibliothèque de regroupement des marqueurs, tant que ces fichiers sont chargés de manière externe ;</li>
+        <li><strong>CARTO</strong> pour l’affichage des tuiles cartographiques sur la carte interactive ;</li>
         <li><strong>OpenStreetMap/Nominatim</strong> pour convertir les recherches en coordonnées ;</li>
         <li><strong>Google Maps</strong> lorsque vous ouvrez un itinéraire ou une carte ;</li>
         <li><strong>sites web ou boutiques en ligne de points de vente</strong> lorsque vous cliquez vers un site externe.</li>
@@ -602,7 +604,7 @@
         ou les obligations légales changent. La version la plus récente est toujours disponible sur cette page.
       </p>
             <p class="small-note">
-        Dernière mise à jour : 17 mai 2026.
+        Dernière mise à jour : 24 mai 2026.
       </p>
     </article>
   </main>
@@ -635,7 +637,7 @@
   </footer>
 
   <script>
-    localStorage.setItem('joie_language', 'fr');
+    try { window.localStorage.setItem('joie_language', 'fr'); } catch (error) {}
   </script>
 </body>
 </html>

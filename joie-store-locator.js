@@ -24,38 +24,13 @@
   let markersByStoreId = new Map();
   let activeStoreId = null;
   let mapCollapsed = false;
-  let cityLabelLayer = null;
   let mapResizeTimer = null;
 
-  const CITY_LABELS = [
-    { lat: 51.2194, lng: 4.4025, nl: "Antwerpen", fr: "Anvers", major: true },
-    { lat: 51.0543, lng: 3.7174, nl: "Gent", fr: "Gand", major: true },
-    { lat: 51.2093, lng: 3.2247, nl: "Brugge", fr: "Bruges", major: true },
-    { lat: 50.8503, lng: 4.3517, nl: "Brussel", fr: "Bruxelles", major: true },
-    { lat: 50.6403, lng: 5.5718, nl: "Luik", fr: "Liège", major: true },
-    { lat: 50.4674, lng: 4.8718, nl: "Namen", fr: "Namur", major: true },
-    { lat: 50.4542, lng: 3.9567, nl: "Bergen", fr: "Mons", major: true },
-    { lat: 50.4108, lng: 4.4446, nl: "Charleroi", fr: "Charleroi", major: true },
-    { lat: 49.6116, lng: 6.1319, nl: "Luxemburg", fr: "Luxembourg", major: true },
-    { lat: 50.8798, lng: 4.7005, nl: "Leuven", fr: "Louvain", minZoom: 8.7 },
-    { lat: 50.9307, lng: 5.3325, nl: "Hasselt", fr: "Hasselt", minZoom: 8.7 },
-    { lat: 51.0259, lng: 4.4776, nl: "Mechelen", fr: "Malines", minZoom: 8.8 },
-    { lat: 50.8249, lng: 3.2658, nl: "Kortrijk", fr: "Courtrai", minZoom: 8.8 },
-    { lat: 50.6056, lng: 3.3890, nl: "Doornik", fr: "Tournai", minZoom: 8.8 },
-    { lat: 50.5039, lng: 4.4699, nl: "Nijvel", fr: "Nivelles", minZoom: 9.2 },
-    { lat: 50.5947, lng: 5.8624, nl: "Verviers", fr: "Verviers", minZoom: 9.2 },
-    { lat: 50.6682, lng: 4.6129, nl: "Waver", fr: "Wavre", minZoom: 9.2 },
-    { lat: 50.2593, lng: 4.9120, nl: "Dinant", fr: "Dinant", minZoom: 9.3 },
-    { lat: 49.6833, lng: 5.8167, nl: "Aarlen", fr: "Arlon", minZoom: 8.9 },
-    { lat: 51.4946, lng: 3.6202, nl: "Middelburg", fr: "Middelbourg", minZoom: 8.5 },
-    { lat: 51.4416, lng: 5.4697, nl: "Eindhoven", fr: "Eindhoven", minZoom: 8.4 },
-    { lat: 50.8514, lng: 5.6909, nl: "Maastricht", fr: "Maastricht", minZoom: 8.4 },
-    { lat: 51.0344, lng: 2.3768, nl: "Duinkerke", fr: "Dunkerque", minZoom: 8.4 },
-    { lat: 50.6292, lng: 3.0573, nl: "Rijsel", fr: "Lille", minZoom: 8.4 },
-    { lat: 50.7753, lng: 6.0839, nl: "Aken", fr: "Aix-la-Chapelle", minZoom: 8.7 }
-  ];
-
-  localStorage.setItem("joie_language", CURRENT_LANG);
+  try {
+    window.localStorage.setItem("joie_language", CURRENT_LANG);
+  } catch (error) {
+    // Local storage can be blocked by browser settings. The store locator still works without it.
+  }
 
   function qs(selector, root = document) {
     return root.querySelector(selector);
@@ -89,6 +64,17 @@
 
   function hasValue(value) {
     return value !== null && value !== undefined && String(value).trim() !== "";
+  }
+
+  function safeExternalUrl(value) {
+    if (!hasValue(value)) return "";
+
+    try {
+      const url = new URL(String(value).trim(), window.location.href);
+      return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
+    } catch (error) {
+      return "";
+    }
   }
 
   function hasCoordinates(store) {
@@ -217,42 +203,6 @@
     container.style.touchAction = "";
   }
 
-  function updateCityLabels() {
-    if (!map || !cityLabelLayer) return;
-
-    const zoom = map.getZoom();
-    cityLabelLayer.clearLayers();
-
-    CITY_LABELS.forEach(city => {
-      const minZoom = city.minZoom ?? (city.major ? 0 : 8.8);
-      const maxZoom = city.maxZoom ?? (city.major ? 9.6 : 10.8);
-      if (zoom < minZoom || zoom > maxZoom) return;
-
-      const label = city[CURRENT_LANG] || city.nl || city.fr;
-      const icon = L.divIcon({
-        className: `joie-city-label${city.major ? " is-major" : ""}`,
-        html: `<span>${escapeHtml(label)}</span>`,
-        iconSize: city.major ? [148, 24] : [130, 22],
-        iconAnchor: city.major ? [74, 12] : [65, 11]
-      });
-
-      L.marker([city.lat, city.lng], {
-        icon,
-        interactive: false,
-        keyboard: false,
-        zIndexOffset: -500
-      }).addTo(cityLabelLayer);
-    });
-  }
-
-  function initCityLabels() {
-    if (!map) return;
-
-    cityLabelLayer = L.layerGroup().addTo(map);
-    updateCityLabels();
-    map.on("zoomend", updateCityLabels);
-  }
-
   function handleMapResize() {
     window.clearTimeout(mapResizeTimer);
     mapResizeTimer = window.setTimeout(() => {
@@ -263,8 +213,8 @@
 
   function getPopupHtml(store) {
     const local = localizedStore(store);
-    const mapsUrl = getGoogleMapsUrl(store);
-    const website = hasValue(local.website) ? String(local.website).trim() : "";
+    const mapsUrl = safeExternalUrl(getGoogleMapsUrl(store));
+    const website = safeExternalUrl(local.website);
 
     return `
       <div class="map-popup">
@@ -289,11 +239,15 @@
       tap: true,
       touchZoom: true,
       dragging: true,
-      attributionControl: true,
+      attributionControl: false,
       zoomControl: false
     });
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
+    L.control.attribution({
+      prefix: false,
+      position: "bottomright"
+    }).addTo(map);
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
       maxZoom: 20,
@@ -303,7 +257,6 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
     }).addTo(map);
 
-    initCityLabels();
     configureMapInteractions();
     window.addEventListener("resize", handleMapResize);
 
@@ -498,8 +451,8 @@
 
   function renderStoreCard(store, distance = null) {
     const local = localizedStore(store);
-    const mapsUrl = getGoogleMapsUrl(store);
-    const website = hasValue(local.website) ? String(local.website).trim() : "";
+    const mapsUrl = safeExternalUrl(getGoogleMapsUrl(store));
+    const website = safeExternalUrl(local.website);
     const distanceLabel = distance !== null
       ? `<div class="store-distance">${distance.toLocaleString(LOCALE, { maximumFractionDigits: 1 })} ${TEXT.distance_suffix}</div>`
       : "";
@@ -727,6 +680,21 @@
         if (event.key === "Enter") searchByAddress();
       });
     }
+
+    const searchButton = qs("#searchButton");
+    if (searchButton) searchButton.addEventListener("click", searchByAddress);
+
+    const resetButton = qs("#resetSearchButton");
+    if (resetButton) resetButton.addEventListener("click", resetSearch);
+
+    const locationButton = qs("#useLocationBtn");
+    if (locationButton) locationButton.addEventListener("click", useMyLocation);
+
+    const mapToggleButton = qs("#mapToggleButton");
+    if (mapToggleButton) mapToggleButton.addEventListener("click", toggleMap);
+
+    const mapFitButton = qs("#mapFitButton");
+    if (mapFitButton) mapFitButton.addEventListener("click", fitAllStores);
 
     const list = qs("#storeList");
     if (list) {

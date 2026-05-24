@@ -34,14 +34,14 @@
       <p class="subtitle">Ontdek de officiële verkooppunten in België en Luxemburg.</p>
     </section>
 
-    <section class="search-section" aria-label="Store locator search">
+    <section class="search-section" aria-label="Zoeken naar verkooppunten">
       <div class="input-group">
         <input type="text" id="locationInput" placeholder="Postcode of stad (bijvoorbeeld 9000 Gent)" autocomplete="postal-code">
-        <button class="btn-secondary" type="button" onclick="resetSearch()">Reset</button>
-        <button class="btn-primary" type="button" onclick="searchByAddress()">Zoek winkels</button>
+        <button class="btn-secondary" id="resetSearchButton" type="button">Reset</button>
+        <button class="btn-primary" id="searchButton" type="button">Zoek winkels</button>
       </div>
 
-      <button class="btn-location" id="useLocationBtn" type="button" onclick="useMyLocation()">
+      <button class="btn-location" id="useLocationBtn" type="button">
         <span class="location-label">
           <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="currentColor" d="M12 2a1 1 0 0 1 1 1v1.07A8 8 0 0 1 19.93 11H21a1 1 0 1 1 0 2h-1.07A8 8 0 0 1 13 19.93V21a1 1 0 1 1-2 0v-1.07A8 8 0 0 1 4.07 13H3a1 1 0 1 1 0-2h1.07A8 8 0 0 1 11 4.07V3a1 1 0 0 1 1-1Zm0 4a6 6 0 1 0 0 12A6 6 0 0 0 12 6Zm0 3.25A2.75 2.75 0 1 1 12 14.75 2.75 2.75 0 0 1 12 9.25Z"/>
@@ -57,10 +57,10 @@
         <div class="map-summary-line" aria-label="Kaart">
           <span class="map-eyebrow">Kaart</span>
         </div>
-        <button class="map-toggle-button" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
+        <button class="map-toggle-button" id="mapToggleButton" type="button" aria-expanded="true" aria-controls="mapPanel">
           <span id="mapToggleLabel">Kaart inklappen</span>
         </button>
-        <button class="map-fit-button" id="mapFitButton" type="button" onclick="fitAllStores()">Toon alle verkooppunten</button>
+        <button class="map-fit-button" id="mapFitButton" type="button">Toon alle verkooppunten</button>
       </div>
       <div class="map-panel" id="mapPanel">
         <div id="storeMap" class="store-map" aria-label="Interactieve kaart met Joie-verkooppunten"></div>

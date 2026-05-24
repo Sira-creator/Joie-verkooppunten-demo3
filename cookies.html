@@ -440,7 +440,8 @@
 
       <p>
         Deze website kan links bevatten naar externe websites en diensten, zoals Google Maps, OpenStreetMap,
-        Nominatim, Instagram of websites en webshops van verkooppunten.
+        Nominatim, Instagram of websites en webshops van verkooppunten. De kaart kan daarnaast externe technische
+        bronnen laden, zoals kaarttegels van CARTO en bibliotheken via een CDN.
       </p>
 
       <p>
@@ -475,7 +476,7 @@
         <a href="mailto:info@bomedys.com">info@bomedys.com</a>.
       </p>
             <p class="small-note">
-        Laatste update: juni 2026.
+        Laatste update: 24 mei 2026.
       </p>
     </article>
   </main>
@@ -508,7 +509,7 @@
   </footer>
 
   <script>
-    localStorage.setItem('joie_language', 'nl');
+    try { window.localStorage.setItem('joie_language', 'nl'); } catch (error) {}
   </script>
 </body>
 </html>

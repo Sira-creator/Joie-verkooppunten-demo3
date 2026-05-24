@@ -441,7 +441,8 @@
 
       <p>
         Ce site web peut contenir des liens vers des sites et services externes, comme Google Maps, OpenStreetMap,
-        Nominatim, Instagram ou des sites web et boutiques en ligne de points de vente.
+        Nominatim, Instagram ou des sites web et boutiques en ligne de points de vente. La carte peut également charger
+        des ressources techniques externes, comme des tuiles cartographiques de CARTO et des bibliothèques via un CDN.
       </p>
 
       <p>
@@ -479,7 +480,7 @@
         <a href="mailto:info@bomedys.com">info@bomedys.com</a>.
       </p>
             <p class="small-note">
-        Dernière mise à jour : 17 mai 2026.
+        Dernière mise à jour : 24 mai 2026.
       </p>
     </article>
   </main>
@@ -512,7 +513,7 @@
   </footer>
 
   <script>
-    localStorage.setItem('joie_language', 'fr');
+    try { window.localStorage.setItem('joie_language', 'fr'); } catch (error) {}
   </script>
 </body>
 </html>
