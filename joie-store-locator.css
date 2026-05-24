@@ -651,6 +651,30 @@ button:hover {
   transform: translateY(-1px);
 }
 
+.map-popup-actions .btn-maps {
+  background: var(--joie-yellow);
+  color: #fff;
+  border-color: var(--joie-yellow);
+}
+
+.map-popup-actions .btn-maps:hover {
+  background: var(--joie-yellow-dark);
+  color: #fff;
+  border-color: var(--joie-yellow-dark);
+}
+
+.map-popup-actions .btn-website {
+  background: #fff;
+  color: var(--text-muted);
+  border-color: #666B72;
+}
+
+.map-popup-actions .btn-website:hover {
+  background: var(--surface-soft);
+  color: var(--text-main);
+  border-color: #4F4F4F;
+}
+
 .store-list {
   display: flex;
   flex-direction: column;
