@@ -246,7 +246,7 @@
     L.control.zoom({ position: "bottomright" }).addTo(map);
     L.control.attribution({
       prefix: false,
-      position: "bottomright"
+      position: "bottomleft"
     }).addTo(map);
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
@@ -254,7 +254,7 @@
       subdomains: "abcd",
       referrerPolicy: "strict-origin-when-cross-origin",
       r: L.Browser.retina ? "@2x" : "",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> &middot; &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
     }).addTo(map);
 
     configureMapInteractions();

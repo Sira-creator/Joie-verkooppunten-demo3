@@ -69,3 +69,18 @@ Voorgestelde domeinnaam:
 
 `joiebaby-stores-belux.be`
 
+## Professionele versie
+
+Deze versie bevat de belangrijkste productiecorrecties:
+
+- geen dubbele plaatsnamen meer op de kaart; de handmatige city-label-laag is verwijderd
+- de Leaflet-prefix is uit de kaartvermelding gehaald
+- de verplichte zichtbare bronvermelding voor OpenStreetMap contributors en CARTO blijft op de kaart staan
+- juridische, privacy-, cookie- en OpenStreetMap-pagina’s zijn datumconsistent gemaakt
+- privacy- en cookiepagina’s vermelden ook externe kaart/CDN-bronnen
+- lege spreadsheetkolommen zoals `Unnamed: ...` worden niet meer opgenomen in de JSON-export
+- inline `onclick`-handlers op de hoofdpagina’s zijn vervangen door JavaScript event listeners
+- externe links uit de winkeldata worden beperkt tot `http`- en `https`-links
+
+Belangrijk voor definitieve publicatie: controleer bij verhuis naar een officiële Joie- of Bomedys-hostingomgeving of de privacytekst nog exact overeenkomt met de werkelijke hosting en gebruikte externe diensten.
+
