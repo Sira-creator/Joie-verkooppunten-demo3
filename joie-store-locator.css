@@ -336,15 +336,18 @@ button:hover {
   align-items: center;
   justify-content: center;
   gap: 9px;
+  min-height: 42px;
   padding: 10px 16px;
-  border: 1px solid rgba(216, 218, 222, .95);
+  border: 1px solid #D8DADE;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .93);
-  color: var(--text-muted);
+  background: #fff;
+  color: var(--text-main);
   font-size: 13px;
   font-weight: 700;
   line-height: 1;
-  box-shadow: none;
+  box-shadow: 0 8px 18px rgba(35, 37, 41, .05);
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease;
 }
 
 .map-toggle-button::after {
@@ -364,10 +367,11 @@ button:hover {
 }
 
 .map-toggle-button:hover {
-  transform: none;
-  background: rgba(255, 255, 255, .93);
-  color: var(--text-muted);
-  border-color: rgba(216, 218, 222, .95);
+  transform: translateY(-1px);
+  border-color: var(--text-main);
+  background: var(--surface-soft);
+  color: var(--text-main);
+  box-shadow: 0 10px 22px rgba(35, 37, 41, .08);
 }
 
 .map-toggle-button:focus-visible {
@@ -439,23 +443,33 @@ button:hover {
 }
 
 
+.store-map .leaflet-bottom.leaflet-left:has(.leaflet-control-attribution) {
+  left: auto !important;
+  right: 0 !important;
+}
+
+.store-map .leaflet-bottom.leaflet-right {
+  right: 12px !important;
+  bottom: 10px !important;
+}
+
 .leaflet-control-attribution {
-  margin: 0 0 0 18px !important;
-  padding: 2px 8px !important;
+  margin: 0 0 0 0 !important;
+  padding: 2px 7px !important;
   border: 0 !important;
-  border-radius: 
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-  background: rgba(255, 255, 255, .62) !important;
-  color: rgba(79, 79, 79, .72) !important;
+  border-radius: 7px 7px 0 0 !important;
+  background: rgba(255, 255, 255, .58) !important;
+  color: rgba(79, 79, 79, .68) !important;
   box-shadow: none !important;
   backdrop-filter: blur(3px);
   font-size: 8px !important;
   font-weight: 400;
   line-height: 1.25 !important;
-  opacity: .82;
+  opacity: .78;
+  white-space: nowrap;
+  max-width: min(72vw, 330px);
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: opacity .2s ease, background-color .2s ease, color .2s ease;
 }
 
@@ -481,6 +495,12 @@ button:hover {
   border: 0 !important;
   border-radius: 14px !important;
   box-shadow: 0 12px 28px rgba(35, 37, 41, .16) !important;
+}
+
+
+.store-map .leaflet-control-zoom {
+  margin-right: 0 !important;
+  margin-bottom: 46px !important;
 }
 
 .leaflet-control-zoom a {
@@ -1053,7 +1073,13 @@ button:hover {
     min-height: 300px;
   }
 
-  .leaflet-control-zoom a {
+  
+.store-map .leaflet-control-zoom {
+  margin-right: 0 !important;
+  margin-bottom: 46px !important;
+}
+
+.leaflet-control-zoom a {
     width: 36px !important;
     height: 36px !important;
     line-height: 36px !important;
@@ -1128,6 +1154,20 @@ button:hover {
   .map-toggle-button {
     padding: 8px 11px;
     font-size: 12px;
+  }
+
+  .map-toggle-button::after {
+    width: 6px;
+    height: 6px;
+  }
+
+  .leaflet-control-attribution {
+    max-width: calc(100vw - 32px);
+    font-size: 7px !important;
+  }
+
+  .store-map .leaflet-control-zoom {
+    margin-bottom: 40px !important;
   }
 
   .store-map {

@@ -246,7 +246,7 @@
     L.control.zoom({ position: "bottomright" }).addTo(map);
     L.control.attribution({
       prefix: false,
-      position: "bottomleft"
+      position: "bottomright"
     }).addTo(map);
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
