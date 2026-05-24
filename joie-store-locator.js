@@ -24,6 +24,36 @@
   let markersByStoreId = new Map();
   let activeStoreId = null;
   let mapCollapsed = false;
+  let cityLabelLayer = null;
+  let mapResizeTimer = null;
+
+  const CITY_LABELS = [
+    { lat: 51.2194, lng: 4.4025, nl: "Antwerpen", fr: "Anvers", major: true },
+    { lat: 51.0543, lng: 3.7174, nl: "Gent", fr: "Gand", major: true },
+    { lat: 51.2093, lng: 3.2247, nl: "Brugge", fr: "Bruges", major: true },
+    { lat: 50.8503, lng: 4.3517, nl: "Brussel", fr: "Bruxelles", major: true },
+    { lat: 50.6403, lng: 5.5718, nl: "Luik", fr: "Liège", major: true },
+    { lat: 50.4674, lng: 4.8718, nl: "Namen", fr: "Namur", major: true },
+    { lat: 50.4542, lng: 3.9567, nl: "Bergen", fr: "Mons", major: true },
+    { lat: 50.4108, lng: 4.4446, nl: "Charleroi", fr: "Charleroi", major: true },
+    { lat: 49.6116, lng: 6.1319, nl: "Luxemburg", fr: "Luxembourg", major: true },
+    { lat: 50.8798, lng: 4.7005, nl: "Leuven", fr: "Louvain", minZoom: 8.7 },
+    { lat: 50.9307, lng: 5.3325, nl: "Hasselt", fr: "Hasselt", minZoom: 8.7 },
+    { lat: 51.0259, lng: 4.4776, nl: "Mechelen", fr: "Malines", minZoom: 8.8 },
+    { lat: 50.8249, lng: 3.2658, nl: "Kortrijk", fr: "Courtrai", minZoom: 8.8 },
+    { lat: 50.6056, lng: 3.3890, nl: "Doornik", fr: "Tournai", minZoom: 8.8 },
+    { lat: 50.5039, lng: 4.4699, nl: "Nijvel", fr: "Nivelles", minZoom: 9.2 },
+    { lat: 50.5947, lng: 5.8624, nl: "Verviers", fr: "Verviers", minZoom: 9.2 },
+    { lat: 50.6682, lng: 4.6129, nl: "Waver", fr: "Wavre", minZoom: 9.2 },
+    { lat: 50.2593, lng: 4.9120, nl: "Dinant", fr: "Dinant", minZoom: 9.3 },
+    { lat: 49.6833, lng: 5.8167, nl: "Aarlen", fr: "Arlon", minZoom: 8.9 },
+    { lat: 51.4946, lng: 3.6202, nl: "Middelburg", fr: "Middelbourg", minZoom: 8.5 },
+    { lat: 51.4416, lng: 5.4697, nl: "Eindhoven", fr: "Eindhoven", minZoom: 8.4 },
+    { lat: 50.8514, lng: 5.6909, nl: "Maastricht", fr: "Maastricht", minZoom: 8.4 },
+    { lat: 51.0344, lng: 2.3768, nl: "Duinkerke", fr: "Dunkerque", minZoom: 8.4 },
+    { lat: 50.6292, lng: 3.0573, nl: "Rijsel", fr: "Lille", minZoom: 8.4 },
+    { lat: 50.7753, lng: 6.0839, nl: "Aken", fr: "Aix-la-Chapelle", minZoom: 8.7 }
+  ];
 
   localStorage.setItem("joie_language", CURRENT_LANG);
 
@@ -176,6 +206,74 @@
     });
   }
 
+  function isTouchMapViewport() {
+    return window.matchMedia("(hover: none) and (pointer: coarse)").matches || window.matchMedia("(max-width: 720px)").matches;
+  }
+
+  function configureMapInteractions() {
+    if (!map) return;
+
+    const limitTouchPanning = isTouchMapViewport();
+    const container = map.getContainer();
+
+    if (limitTouchPanning) {
+      map.dragging.disable();
+      map.touchZoom.disable();
+      map.doubleClickZoom.disable();
+      if (map.tap) map.tap.disable();
+      container.style.touchAction = "pan-y";
+    } else {
+      map.dragging.enable();
+      map.touchZoom.enable();
+      map.doubleClickZoom.enable();
+      if (map.tap) map.tap.enable();
+      container.style.touchAction = "";
+    }
+  }
+
+  function updateCityLabels() {
+    if (!map || !cityLabelLayer) return;
+
+    const zoom = map.getZoom();
+    cityLabelLayer.clearLayers();
+
+    CITY_LABELS.forEach(city => {
+      const minZoom = city.minZoom ?? (city.major ? 0 : 8.8);
+      if (zoom < minZoom) return;
+
+      const label = city[CURRENT_LANG] || city.nl || city.fr;
+      const icon = L.divIcon({
+        className: `joie-city-label${city.major ? " is-major" : ""}`,
+        html: `<span>${escapeHtml(label)}</span>`,
+        iconSize: city.major ? [148, 24] : [130, 22],
+        iconAnchor: city.major ? [74, 12] : [65, 11]
+      });
+
+      L.marker([city.lat, city.lng], {
+        icon,
+        interactive: false,
+        keyboard: false,
+        zIndexOffset: -500
+      }).addTo(cityLabelLayer);
+    });
+  }
+
+  function initCityLabels() {
+    if (!map) return;
+
+    cityLabelLayer = L.layerGroup().addTo(map);
+    updateCityLabels();
+    map.on("zoomend", updateCityLabels);
+  }
+
+  function handleMapResize() {
+    window.clearTimeout(mapResizeTimer);
+    mapResizeTimer = window.setTimeout(() => {
+      configureMapInteractions();
+      if (map) map.invalidateSize();
+    }, 120);
+  }
+
   function getPopupHtml(store) {
     const local = localizedStore(store);
     const mapsUrl = getGoogleMapsUrl(store);
@@ -196,27 +294,33 @@
     const mapEl = qs("#storeMap");
     if (!mapEl || typeof L === "undefined") return;
 
+    const limitedTouchPanning = isTouchMapViewport();
+
     map = L.map(mapEl, {
       center: DEFAULT_VIEW.center,
       zoom: DEFAULT_VIEW.zoom,
       zoomSnap: 0.25,
       scrollWheelZoom: false,
-      tap: true,
-      touchZoom: true,
-      dragging: true,
+      tap: !limitedTouchPanning,
+      touchZoom: !limitedTouchPanning,
+      dragging: !limitedTouchPanning,
       attributionControl: true,
       zoomControl: false
     });
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
       maxZoom: 20,
       subdomains: "abcd",
       referrerPolicy: "strict-origin-when-cross-origin",
       r: L.Browser.retina ? "@2x" : "",
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
     }).addTo(map);
+
+    initCityLabels();
+    configureMapInteractions();
+    window.addEventListener("resize", handleMapResize);
 
     markerCluster = typeof L.markerClusterGroup === "function"
       ? L.markerClusterGroup({
@@ -259,8 +363,8 @@
     }
     if (toggle) toggle.setAttribute("aria-expanded", String(!mapCollapsed));
     if (label) label.textContent = mapCollapsed
-      ? (TEXT.map_expand || (CURRENT_LANG === "fr" ? "Déplier" : "Uitklappen"))
-      : (TEXT.map_collapse || (CURRENT_LANG === "fr" ? "Replier" : "Inklappen"));
+      ? (TEXT.map_expand || (CURRENT_LANG === "fr" ? "Déplier la carte" : "Kaart uitklappen"))
+      : (TEXT.map_collapse || (CURRENT_LANG === "fr" ? "Replier la carte" : "Kaart inklappen"));
 
     if (!mapCollapsed && map) {
       window.setTimeout(() => map.invalidateSize(), 240);

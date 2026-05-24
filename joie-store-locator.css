@@ -298,40 +298,14 @@ button:hover {
 }
 
 .map-toolbar {
-  min-height: 58px;
+  min-height: 62px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 12px;
-  padding: 11px 13px 11px 16px;
+  padding: 12px 13px 12px 18px;
   border-bottom: 1px solid rgba(233, 234, 236, .95);
   background: linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(255, 250, 240, .96) 100%);
-}
-
-.map-toggle-summary {
-  min-width: 0;
-  width: 100%;
-  padding: 8px 9px 8px 4px;
-  border: 0;
-  border-radius: 14px;
-  background: transparent;
-  color: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  text-align: left;
-  white-space: normal;
-}
-
-.map-toggle-summary:hover {
-  background: rgba(242, 169, 0, .07);
-  transform: none;
-}
-
-.map-toggle-summary:focus-visible {
-  outline: 3px solid rgba(242, 169, 0, .26);
-  outline-offset: 2px;
 }
 
 .map-summary-line {
@@ -339,12 +313,12 @@ button:hover {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 10px;
 }
 
 .map-eyebrow {
   color: var(--joie-yellow-dark);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -352,26 +326,28 @@ button:hover {
 
 .map-count {
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
 }
 
-.map-toggle-label {
+.map-toggle-button {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
+  justify-content: center;
+  gap: 9px;
+  padding: 10px 16px;
   border: 1px solid rgba(216, 218, 222, .95);
   border-radius: 999px;
-  background: rgba(255, 255, 255, .88);
+  background: rgba(255, 255, 255, .93);
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1;
+  box-shadow: none;
 }
 
-.map-toggle-label::after {
+.map-toggle-button::after {
   content: "";
   display: block;
   width: 7px;
@@ -380,12 +356,23 @@ button:hover {
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
   margin-top: -4px;
-  transition: transform .2s ease, margin .2s ease;
 }
 
-.map-section.is-collapsed .map-toggle-label::after {
+.map-section.is-collapsed .map-toggle-button::after {
   transform: rotate(-135deg);
   margin-top: 4px;
+}
+
+.map-toggle-button:hover {
+  transform: none;
+  background: rgba(255, 255, 255, .93);
+  color: var(--text-muted);
+  border-color: rgba(216, 218, 222, .95);
+}
+
+.map-toggle-button:focus-visible {
+  outline: 3px solid rgba(242, 169, 0, .26);
+  outline-offset: 2px;
 }
 
 .map-fit-button {
@@ -403,7 +390,7 @@ button:hover {
 }
 
 .map-panel {
-  max-height: 560px;
+  max-height: 540px;
   overflow: hidden;
   opacity: 1;
   transition: max-height .28s ease, opacity .2s ease;
@@ -422,21 +409,48 @@ button:hover {
 
 .store-map {
   width: 100%;
-  height: min(58vh, 520px);
-  min-height: 410px;
-  background: radial-gradient(circle at top left, #fff4d4 0%, #f7f3e9 45%, #eef2f4 100%);
+  height: min(54vh, 500px);
+  min-height: 390px;
+  background: linear-gradient(180deg, #DCEEF7 0%, #F6F0DF 100%);
   z-index: 1;
 }
 
 .leaflet-container {
   font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text-main);
-  background: #f6f2e9;
+  background: #DCEEF7;
 }
 
 .store-map .leaflet-tile-pane {
-  filter: saturate(.78) sepia(.10) hue-rotate(350deg) brightness(1.04) contrast(.92);
-  opacity: .95;
+  filter: saturate(.92) brightness(1.02) contrast(.94);
+  opacity: .98;
+}
+
+.joie-city-label {
+  background: transparent;
+  border: 0;
+  pointer-events: none;
+  text-align: center;
+}
+
+.joie-city-label span {
+  display: inline-block;
+  max-width: 146px;
+  padding: 1px 4px;
+  color: rgba(79, 79, 79, .56);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .94), 0 -1px 0 rgba(255, 255, 255, .72), 1px 0 0 rgba(255, 255, 255, .72), -1px 0 0 rgba(255, 255, 255, .72);
+}
+
+.joie-city-label.is-major span {
+  color: rgba(79, 79, 79, .64);
+  font-size: 13px;
+  letter-spacing: .055em;
 }
 
 .leaflet-control-attribution {
@@ -928,14 +942,9 @@ button:hover {
   }
 
   .map-toolbar {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
-    padding: 12px;
-  }
-
-  .map-toggle-summary {
-    gap: 10px;
-    padding: 6px 4px;
+    padding: 11px 12px;
   }
 
   .map-summary-line {
@@ -943,21 +952,29 @@ button:hover {
   }
 
   .map-count {
+    display: none;
+  }
+
+  .map-toggle-button {
+    padding: 9px 13px;
     font-size: 13px;
   }
 
-  .map-toggle-label {
-    padding: 7px 9px;
-  }
-
   .map-fit-button {
+    grid-column: 1 / -1;
     width: 100%;
     padding: 10px 12px;
   }
 
   .store-map {
-    height: 420px;
-    min-height: 360px;
+    height: 330px;
+    min-height: 300px;
+  }
+
+  .leaflet-control-zoom a {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
   }
 
   .store-card {
@@ -1022,16 +1039,22 @@ button:hover {
 }
 
 @media (max-width: 420px) {
-  .map-toggle-label {
-    width: 35px;
-    height: 35px;
-    padding: 0;
-    justify-content: center;
-    font-size: 0;
+  .map-toolbar {
+    gap: 8px;
   }
 
-  .map-toggle-label::after {
-    margin-left: 0;
+  .map-toggle-button {
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+
+  .store-map {
+    height: 300px;
+    min-height: 280px;
+  }
+
+  .joie-city-label.is-major span {
+    font-size: 12px;
   }
 
   .header-content {

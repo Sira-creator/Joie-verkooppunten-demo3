@@ -54,12 +54,12 @@
 
     <section class="map-section" id="mapShell" aria-label="Kaart met Joie-verkooppunten">
       <div class="map-toolbar">
-        <button class="map-toggle-summary" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
-          <span class="map-summary-line">
-            <span class="map-eyebrow">Kaart</span>
-            <span class="map-count" id="mapStoreCount">Verkooppunten laden...</span>
-          </span>
-          <span class="map-toggle-label" id="mapToggleLabel">Inklappen</span>
+        <div class="map-summary-line" aria-live="polite">
+          <span class="map-eyebrow">Kaart</span>
+          <span class="map-count" id="mapStoreCount">Verkooppunten laden...</span>
+        </div>
+        <button class="map-toggle-button" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
+          <span id="mapToggleLabel">Kaart inklappen</span>
         </button>
         <button class="map-fit-button" type="button" onclick="fitAllStores()">Toon alle verkooppunten</button>
       </div>
@@ -146,11 +146,11 @@
         enter_address: "Voer een adres, postcode of stad in.",
         geo_not_supported: "Geolocatie wordt niet ondersteund door je browser.",
         load_error: "Kon de winkels niet laden. Controleer of stores.json naast deze HTML-pagina staat.",
-        map_count: "{count} verkooppunten weergegeven",
-        map_count_single: "1 verkooppunt weergegeven",
+        map_count: "{count} verkooppunten.",
+        map_count_single: "1 verkooppunt.",
         current_location_label: "Jouw locatie",
-        map_collapse: "Inklappen",
-        map_expand: "Uitklappen"
+        map_collapse: "Kaart inklappen",
+        map_expand: "Kaart uitklappen"
       }
     };
   </script>
