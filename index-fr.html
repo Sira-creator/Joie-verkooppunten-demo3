@@ -54,14 +54,13 @@
 
     <section class="map-section" id="mapShell" aria-label="Carte des points de vente Joie">
       <div class="map-toolbar">
-        <div class="map-summary-line" aria-live="polite">
+        <div class="map-summary-line" aria-label="Carte">
           <span class="map-eyebrow">Carte</span>
-          <span class="map-count" id="mapStoreCount">Chargement des points de vente...</span>
         </div>
         <button class="map-toggle-button" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
           <span id="mapToggleLabel">Replier la carte</span>
         </button>
-        <button class="map-fit-button" type="button" onclick="fitAllStores()">Afficher tous les points de vente</button>
+        <button class="map-fit-button" id="mapFitButton" type="button" onclick="fitAllStores()">Afficher tous les points de vente</button>
       </div>
       <div class="map-panel" id="mapPanel">
         <div id="storeMap" class="store-map" aria-label="Carte interactive des points de vente Joie"></div>
@@ -148,6 +147,9 @@
         load_error: "Impossible de charger les magasins. Vérifiez que stores.json se trouve à côté de cette page HTML.",
         map_count: "{count} points de vente.",
         map_count_single: "1 point de vente.",
+        map_show_all: "Afficher les {count} points de vente",
+        map_show_all_single: "Afficher 1 point de vente",
+        map_show_all_empty: "Afficher tous les points de vente",
         current_location_label: "Votre position",
         map_collapse: "Replier la carte",
         map_expand: "Déplier la carte"

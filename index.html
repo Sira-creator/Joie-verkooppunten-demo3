@@ -54,14 +54,13 @@
 
     <section class="map-section" id="mapShell" aria-label="Kaart met Joie-verkooppunten">
       <div class="map-toolbar">
-        <div class="map-summary-line" aria-live="polite">
+        <div class="map-summary-line" aria-label="Kaart">
           <span class="map-eyebrow">Kaart</span>
-          <span class="map-count" id="mapStoreCount">Verkooppunten laden...</span>
         </div>
         <button class="map-toggle-button" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
           <span id="mapToggleLabel">Kaart inklappen</span>
         </button>
-        <button class="map-fit-button" type="button" onclick="fitAllStores()">Toon alle verkooppunten</button>
+        <button class="map-fit-button" id="mapFitButton" type="button" onclick="fitAllStores()">Toon alle verkooppunten</button>
       </div>
       <div class="map-panel" id="mapPanel">
         <div id="storeMap" class="store-map" aria-label="Interactieve kaart met Joie-verkooppunten"></div>
@@ -148,6 +147,9 @@
         load_error: "Kon de winkels niet laden. Controleer of stores.json naast deze HTML-pagina staat.",
         map_count: "{count} verkooppunten.",
         map_count_single: "1 verkooppunt.",
+        map_show_all: "Toon alle {count} verkooppunten",
+        map_show_all_single: "Toon 1 verkooppunt",
+        map_show_all_empty: "Toon alle verkooppunten",
         current_location_label: "Jouw locatie",
         map_collapse: "Kaart inklappen",
         map_expand: "Kaart uitklappen"

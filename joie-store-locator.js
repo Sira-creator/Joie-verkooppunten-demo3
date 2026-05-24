@@ -206,29 +206,15 @@
     });
   }
 
-  function isTouchMapViewport() {
-    return window.matchMedia("(hover: none) and (pointer: coarse)").matches || window.matchMedia("(max-width: 720px)").matches;
-  }
-
   function configureMapInteractions() {
     if (!map) return;
 
-    const limitTouchPanning = isTouchMapViewport();
     const container = map.getContainer();
-
-    if (limitTouchPanning) {
-      map.dragging.disable();
-      map.touchZoom.disable();
-      map.doubleClickZoom.disable();
-      if (map.tap) map.tap.disable();
-      container.style.touchAction = "pan-y";
-    } else {
-      map.dragging.enable();
-      map.touchZoom.enable();
-      map.doubleClickZoom.enable();
-      if (map.tap) map.tap.enable();
-      container.style.touchAction = "";
-    }
+    map.dragging.enable();
+    map.touchZoom.enable();
+    map.doubleClickZoom.enable();
+    if (map.tap) map.tap.enable();
+    container.style.touchAction = "";
   }
 
   function updateCityLabels() {
@@ -239,7 +225,8 @@
 
     CITY_LABELS.forEach(city => {
       const minZoom = city.minZoom ?? (city.major ? 0 : 8.8);
-      if (zoom < minZoom) return;
+      const maxZoom = city.maxZoom ?? (city.major ? 9.6 : 10.8);
+      if (zoom < minZoom || zoom > maxZoom) return;
 
       const label = city[CURRENT_LANG] || city.nl || city.fr;
       const icon = L.divIcon({
@@ -284,8 +271,8 @@
         <strong>${escapeHtml(local.name)}</strong>
         ${hasValue(local.address) ? `<span>${escapeHtml(local.address)}</span>` : ""}
         <div class="map-popup-actions">
-          ${mapsUrl ? `<a href="${escapeHtml(mapsUrl)}" target="_blank" rel="noopener">${TEXT.maps}</a>` : ""}
-          ${website ? `<a href="${escapeHtml(website)}" target="_blank" rel="noopener">${TEXT.webshop}</a>` : ""}
+          ${mapsUrl ? `<a class="btn-maps" href="${escapeHtml(mapsUrl)}" target="_blank" rel="noopener">${TEXT.maps}</a>` : ""}
+          ${website ? `<a class="btn-website" href="${escapeHtml(website)}" target="_blank" rel="noopener">${TEXT.webshop}</a>` : ""}
         </div>
       </div>`;
   }
@@ -294,23 +281,21 @@
     const mapEl = qs("#storeMap");
     if (!mapEl || typeof L === "undefined") return;
 
-    const limitedTouchPanning = isTouchMapViewport();
-
     map = L.map(mapEl, {
       center: DEFAULT_VIEW.center,
       zoom: DEFAULT_VIEW.zoom,
       zoomSnap: 0.25,
       scrollWheelZoom: false,
-      tap: !limitedTouchPanning,
-      touchZoom: !limitedTouchPanning,
-      dragging: !limitedTouchPanning,
+      tap: true,
+      touchZoom: true,
+      dragging: true,
       attributionControl: true,
       zoomControl: false
     });
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
       maxZoom: 20,
       subdomains: "abcd",
       referrerPolicy: "strict-origin-when-cross-origin",
@@ -342,10 +327,17 @@
   }
 
   function updateMapCounter(count) {
-    const counter = qs("#mapStoreCount");
-    if (!counter) return;
-    const template = count === 1 ? (TEXT.map_count_single || TEXT.map_count) : TEXT.map_count;
-    counter.textContent = String(template || "{count}").replace("{count}", count);
+    const fitButton = qs("#mapFitButton");
+    if (!fitButton) return;
+
+    const template = count === 0
+      ? (TEXT.map_show_all_empty || TEXT.map_show_all || "{count}")
+      : count === 1
+        ? (TEXT.map_show_all_single || TEXT.map_show_all || "{count}")
+        : (TEXT.map_show_all || "{count}");
+
+    fitButton.textContent = String(template).replace("{count}", count);
+    fitButton.disabled = count === 0;
   }
 
   function setMapCollapsed(collapsed) {
