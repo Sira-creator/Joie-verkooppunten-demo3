@@ -539,6 +539,18 @@ button:hover {
   line-height: 1 !important;
   box-shadow: 0 6px 14px rgba(35, 37, 41, .08);
 }
+.leaflet-container a.leaflet-popup-close-button {
+  font-size: 0 !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button::before {
+  content: "×";
+  display: block;
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 28px;
+  transform: translateY(-1px);
+}
 
 .leaflet-container a.leaflet-popup-close-button:hover,
 .leaflet-container a.leaflet-popup-close-button:focus-visible {
