@@ -440,7 +440,6 @@ button:hover {
 
 
 .leaflet-control-attribution {
-  max-width: calc(100% - 92px);
   margin: 0 0 6px 8px !important;
   padding: 2px 6px !important;
   border: 0 !important;
@@ -449,8 +448,8 @@ button:hover {
   color: rgba(79, 79, 79, .72) !important;
   box-shadow: none !important;
   backdrop-filter: blur(3px);
-  font-size: 9px !important;
-  font-weight: 600;
+  font-size: 8px !important;
+  font-weight: 400;
   line-height: 1.25 !important;
   opacity: .82;
   transition: opacity .2s ease, background-color .2s ease, color .2s ease;
