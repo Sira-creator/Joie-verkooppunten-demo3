@@ -438,32 +438,6 @@ button:hover {
   opacity: .99;
 }
 
-.joie-city-label {
-  background: transparent;
-  border: 0;
-  pointer-events: none;
-  text-align: center;
-}
-
-.joie-city-label span {
-  display: inline-block;
-  max-width: 146px;
-  padding: 1px 4px;
-  color: rgba(79, 79, 79, .56);
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: .035em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, .94), 0 -1px 0 rgba(255, 255, 255, .72), 1px 0 0 rgba(255, 255, 255, .72), -1px 0 0 rgba(255, 255, 255, .72);
-}
-
-.joie-city-label.is-major span {
-  color: rgba(79, 79, 79, .64);
-  font-size: 13px;
-  letter-spacing: .055em;
-}
 
 .leaflet-control-attribution {
   padding: 3px 7px !important;
@@ -524,29 +498,27 @@ button:hover {
 .leaflet-container a.leaflet-popup-close-button {
   top: 8px !important;
   right: 8px !important;
-  width: 28px !important;
-  height: 28px !important;
+  width: 30px !important;
+  height: 30px !important;
   padding: 0 !important;
   border: 1px solid rgba(216, 218, 222, .95) !important;
   border-radius: 999px;
   background: rgba(255, 255, 255, .96) !important;
   color: var(--text-muted) !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px !important;
-  font-weight: 400 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0 !important;
   line-height: 1 !important;
   box-shadow: 0 6px 14px rgba(35, 37, 41, .08);
-}
-.leaflet-container a.leaflet-popup-close-button {
-  font-size: 0 !important;
 }
 
 .leaflet-container a.leaflet-popup-close-button::before {
   content: "×";
   display: block;
-  font-size: 26px;
+  width: 100%;
+  text-align: center;
+  font-size: 28px;
   font-weight: 300;
   line-height: 28px;
   transform: translateY(-1px);
@@ -1125,10 +1097,6 @@ button:hover {
   .store-map {
     height: 300px;
     min-height: 280px;
-  }
-
-  .joie-city-label.is-major span {
-    font-size: 12px;
   }
 
   .header-content {
