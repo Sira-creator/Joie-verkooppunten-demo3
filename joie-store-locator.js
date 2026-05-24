@@ -23,6 +23,7 @@
   let referenceMarker = null;
   let markersByStoreId = new Map();
   let activeStoreId = null;
+  let mapCollapsed = false;
 
   localStorage.setItem("joie_language", CURRENT_LANG);
 
@@ -90,16 +91,17 @@
 
   function getGoogleMapsUrl(store) {
     const local = localizedStore(store);
-    if (hasValue(local.googleMapsUrl)) return String(local.googleMapsUrl).trim();
-
     const lat = toFiniteNumber(store.lat);
     const lng = toFiniteNumber(store.lng);
-    if (lat !== null && lng !== null) {
-      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}&hl=${GOOGLE_MAPS_HL}`;
+    const destination = lat !== null && lng !== null
+      ? `${lat},${lng}`
+      : [local.name, local.address, local.city, local.country].filter(hasValue).join(", ");
+
+    if (destination) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=driving&hl=${GOOGLE_MAPS_HL}`;
     }
 
-    const query = [local.name, local.address, local.city, local.country].filter(hasValue).join(", ");
-    return query ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}&hl=${GOOGLE_MAPS_HL}` : "";
+    return hasValue(local.googleMapsUrl) ? String(local.googleMapsUrl).trim() : "";
   }
 
   function getStoreSearchFields(store) {
@@ -202,16 +204,18 @@
       tap: true,
       touchZoom: true,
       dragging: true,
-      attributionControl: true
+      attributionControl: true,
+      zoomControl: false
     });
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      detectRetina: true,
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      maxZoom: 20,
+      subdomains: "abcd",
       referrerPolicy: "strict-origin-when-cross-origin",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+      r: L.Browser.retina ? "@2x" : "",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'
     }).addTo(map);
 
     markerCluster = typeof L.markerClusterGroup === "function"
@@ -238,6 +242,33 @@
     if (!counter) return;
     const template = count === 1 ? (TEXT.map_count_single || TEXT.map_count) : TEXT.map_count;
     counter.textContent = String(template || "{count}").replace("{count}", count);
+  }
+
+  function setMapCollapsed(collapsed) {
+    mapCollapsed = Boolean(collapsed);
+
+    const shell = qs("#mapShell");
+    const panel = qs("#mapPanel");
+    const toggle = qs("#mapToggleButton");
+    const label = qs("#mapToggleLabel");
+
+    if (shell) shell.classList.toggle("is-collapsed", mapCollapsed);
+    if (panel) {
+      panel.setAttribute("aria-hidden", mapCollapsed ? "true" : "false");
+      if ("inert" in panel) panel.inert = mapCollapsed;
+    }
+    if (toggle) toggle.setAttribute("aria-expanded", String(!mapCollapsed));
+    if (label) label.textContent = mapCollapsed
+      ? (TEXT.map_expand || (CURRENT_LANG === "fr" ? "Déplier" : "Uitklappen"))
+      : (TEXT.map_collapse || (CURRENT_LANG === "fr" ? "Replier" : "Inklappen"));
+
+    if (!mapCollapsed && map) {
+      window.setTimeout(() => map.invalidateSize(), 240);
+    }
+  }
+
+  function toggleMap() {
+    setMapCollapsed(!mapCollapsed);
   }
 
   function setReferenceMarker(lat, lng, label) {
@@ -287,7 +318,7 @@
         maxWidth: 280
       });
 
-      marker.on("click", () => setActiveStore(store.__joieId, { scrollCard: true, openPopup: false }));
+      marker.on("click", () => setActiveStore(store.__joieId, { scrollCard: false }));
 
       markersByStoreId.set(store.__joieId, marker);
       markerCluster.addLayer(marker);
@@ -296,6 +327,13 @@
 
   function fitAllStores() {
     if (!map || !markerCluster || !markerCluster.getLayers().length) return;
+
+    if (mapCollapsed) {
+      setMapCollapsed(false);
+      window.setTimeout(fitAllStores, 260);
+      return;
+    }
+
     map.fitBounds(markerCluster.getBounds(), {
       padding: [38, 38],
       maxZoom: 13
@@ -314,18 +352,28 @@
     const marker = markersByStoreId.get(storeId);
     if (!marker) return;
 
-    setActiveStore(storeId, { scrollCard: Boolean(options.scrollCard), openPopup: false });
+    setActiveStore(storeId, { scrollCard: Boolean(options.scrollCard) });
 
-    const openMarker = () => {
-      marker.openPopup();
-      if (map.getZoom() < 12) map.flyTo(marker.getLatLng(), 12, { duration: 0.65 });
+    const showMarker = () => {
+      const openMarker = () => {
+        marker.openPopup();
+        if (map.getZoom() < 12) map.flyTo(marker.getLatLng(), 12, { duration: 0.65 });
+      };
+
+      if (typeof markerCluster.zoomToShowLayer === "function") {
+        markerCluster.zoomToShowLayer(marker, openMarker);
+      } else {
+        map.flyTo(marker.getLatLng(), 12, { duration: 0.65 });
+        window.setTimeout(openMarker, 220);
+      }
     };
 
-    if (typeof markerCluster.zoomToShowLayer === "function") {
-      markerCluster.zoomToShowLayer(marker, openMarker);
+    if (mapCollapsed) {
+      if (!options.expandMap) return;
+      setMapCollapsed(false);
+      window.setTimeout(showMarker, 260);
     } else {
-      map.flyTo(marker.getLatLng(), 12, { duration: 0.65 });
-      window.setTimeout(openMarker, 220);
+      showMarker();
     }
 
     if (options.scrollMap) {
@@ -589,7 +637,7 @@
       list.addEventListener("click", event => {
         if (event.target.closest("a")) return;
         const card = event.target.closest(".store-card");
-        if (card) focusStoreOnMap(card.dataset.storeId, { scrollMap: true, scrollCard: false });
+        if (card) focusStoreOnMap(card.dataset.storeId, { scrollMap: true, scrollCard: false, expandMap: true });
       });
 
       list.addEventListener("keydown", event => {
@@ -598,7 +646,7 @@
         const card = event.target.closest(".store-card");
         if (!card) return;
         event.preventDefault();
-        focusStoreOnMap(card.dataset.storeId, { scrollMap: true, scrollCard: false });
+        focusStoreOnMap(card.dataset.storeId, { scrollMap: true, scrollCard: false, expandMap: true });
       });
     }
   }
@@ -607,10 +655,12 @@
   window.searchByAddress = searchByAddress;
   window.useMyLocation = useMyLocation;
   window.fitAllStores = fitAllStores;
+  window.toggleMap = toggleMap;
 
   document.addEventListener("DOMContentLoaded", () => {
     bindEvents();
     initMap();
+    setMapCollapsed(false);
     loadStores();
   });
 })();

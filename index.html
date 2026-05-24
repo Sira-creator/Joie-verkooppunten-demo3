@@ -54,13 +54,18 @@
 
     <section class="map-section" id="mapShell" aria-label="Kaart met Joie-verkooppunten">
       <div class="map-toolbar">
-        <div class="map-toolbar-copy">
-          <span class="map-eyebrow">Kaart</span>
-          <span class="map-count" id="mapStoreCount">Winkels laden...</span>
-        </div>
+        <button class="map-toggle-summary" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
+          <span class="map-summary-line">
+            <span class="map-eyebrow">Kaart</span>
+            <span class="map-count" id="mapStoreCount">Verkooppunten laden...</span>
+          </span>
+          <span class="map-toggle-label" id="mapToggleLabel">Inklappen</span>
+        </button>
         <button class="map-fit-button" type="button" onclick="fitAllStores()">Toon alle verkooppunten</button>
       </div>
-      <div id="storeMap" class="store-map" aria-label="Interactieve kaart met Joie-verkooppunten"></div>
+      <div class="map-panel" id="mapPanel">
+        <div id="storeMap" class="store-map" aria-label="Interactieve kaart met Joie-verkooppunten"></div>
+      </div>
     </section>
 
     <section id="storeList" class="store-list" aria-live="polite">
@@ -125,7 +130,7 @@
       text: {
         loading: "Winkels laden...",
         no_results: "Geen winkels gevonden.",
-        maps: "Open Google Maps",
+        maps: "Bereken route via Google Maps",
         webshop: "Webshop",
         distance_suffix: "km",
         getting_location: "Locatie ophalen...",
@@ -141,9 +146,11 @@
         enter_address: "Voer een adres, postcode of stad in.",
         geo_not_supported: "Geolocatie wordt niet ondersteund door je browser.",
         load_error: "Kon de winkels niet laden. Controleer of stores.json naast deze HTML-pagina staat.",
-        map_count: "{count} winkels weergegeven",
-        map_count_single: "1 winkel weergegeven",
-        current_location_label: "Jouw locatie"
+        map_count: "{count} verkooppunten weergegeven",
+        map_count_single: "1 verkooppunt weergegeven",
+        current_location_label: "Jouw locatie",
+        map_collapse: "Inklappen",
+        map_expand: "Uitklappen"
       }
     };
   </script>

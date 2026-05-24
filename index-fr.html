@@ -54,13 +54,18 @@
 
     <section class="map-section" id="mapShell" aria-label="Carte des points de vente Joie">
       <div class="map-toolbar">
-        <div class="map-toolbar-copy">
-          <span class="map-eyebrow">Carte</span>
-          <span class="map-count" id="mapStoreCount">Chargement des magasins...</span>
-        </div>
+        <button class="map-toggle-summary" id="mapToggleButton" type="button" onclick="toggleMap()" aria-expanded="true" aria-controls="mapPanel">
+          <span class="map-summary-line">
+            <span class="map-eyebrow">Carte</span>
+            <span class="map-count" id="mapStoreCount">Chargement des points de vente...</span>
+          </span>
+          <span class="map-toggle-label" id="mapToggleLabel">Replier</span>
+        </button>
         <button class="map-fit-button" type="button" onclick="fitAllStores()">Afficher tous les points de vente</button>
       </div>
-      <div id="storeMap" class="store-map" aria-label="Carte interactive des points de vente Joie"></div>
+      <div class="map-panel" id="mapPanel">
+        <div id="storeMap" class="store-map" aria-label="Carte interactive des points de vente Joie"></div>
+      </div>
     </section>
 
     <section id="storeList" class="store-list" aria-live="polite">
@@ -125,7 +130,7 @@
       text: {
         loading: "Chargement des magasins...",
         no_results: "Aucun magasin trouvé.",
-        maps: "Ouvrir Google Maps",
+        maps: "Calculer l’itinéraire via Google Maps",
         webshop: "Boutique en ligne",
         distance_suffix: "km",
         getting_location: "Récupération de la position...",
@@ -141,9 +146,11 @@
         enter_address: "Saisissez une adresse, un code postal ou une ville.",
         geo_not_supported: "La géolocalisation n’est pas prise en charge par votre navigateur.",
         load_error: "Impossible de charger les magasins. Vérifiez que stores.json se trouve à côté de cette page HTML.",
-        map_count: "{count} magasins affichés",
-        map_count_single: "1 magasin affiché",
-        current_location_label: "Votre position"
+        map_count: "{count} points de vente affichés",
+        map_count_single: "1 point de vente affiché",
+        current_location_label: "Votre position",
+        map_collapse: "Replier",
+        map_expand: "Déplier"
       }
     };
   </script>
